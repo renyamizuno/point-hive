@@ -1,4 +1,4 @@
-class Coinhive {
+class Pointhive {
   constructor () {}
 
   start () {
